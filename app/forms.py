@@ -7,8 +7,8 @@ from app.models import User
 class AdminRegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
-    password = PasswordField("Password", validators=[DataRequired()])
     residence = StringField('Residence', validators=[DataRequired()])
+    password = PasswordField("Password", validators=[DataRequired()])
     confirm_password = PasswordField(
         'Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Submit')
@@ -27,8 +27,8 @@ class AdminRegistrationForm(FlaskForm):
 class StudentRegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
-    password = PasswordField("Password", validators=[DataRequired()])
     school = StringField('School', validators=[DataRequired()])
+    password = PasswordField("Password", validators=[DataRequired()])
     confirm_password = PasswordField(
         'Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Submit')
@@ -47,8 +47,8 @@ class StudentRegistrationForm(FlaskForm):
 class TeacherRegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
-    password = PasswordField("Password", validators=[DataRequired()])
     course = StringField('Course', validators=[DataRequired()])
+    password = PasswordField("Password", validators=[DataRequired()])
     confirm_password = PasswordField(
         'Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Submit')
