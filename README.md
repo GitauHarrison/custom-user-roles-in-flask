@@ -54,8 +54,8 @@ This was not the most ideal way of handling different application users.
 The frustrations from **attempt 1** forced me to check the SQLAlchemy documentation for a way around this. I learnt of the concept of _joined table inheritance_. It was exactly what I was looking for. I even wrote a whole [article](https://github.com/GitauHarrison/notes/blob/master/databases/99_joined_table_inheritance.md) about this life-saving concept. The idea behind joined table inheritance is this:
 
 >- If the models have some common colums, say username, email and password, it is best to create a model called User that define these columns.
->- Then, create additonal models that define the specific columns in each model. For example, a Teacher table will have the 'course' column whereas the Student mmodel will have a model-specific column called 'school'.
->- The User model with common columns act as the base class from which the Teacher, Student, and Admin models will inherit.
+>- Then, create additonal models that define the specific columns in each model. For example, a Teacher table will have the 'course' column whereas the Student model will have a model-specific column called 'school'.
+>- The User model with common columns acts as the base class from which the Teacher, Student, and Admin models will inherit.
 >- The tables are configured using mappers and identified using a discriminator column
 
 
@@ -69,10 +69,7 @@ Let us think about this for a moment:
   def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(
-            username=form.username.data,
-            email=form.email.data,
-        )
+        user = User(username=form.username.data, email=form.email.data)
         db.session.add(user)
         db.session.commit()
         flash('User successfully registered')
@@ -80,11 +77,12 @@ Let us think about this for a moment:
     return render_template('register.html', title='Register')
   ```
 
-The problem with this view function as far as joined table inheritance is concerned goes is that the user is added to the "User" model only. What about the other model specific data, such as 'course' for a teacher or 'school' for a student? How do you add them to their models? Should you do this?
+The problem with this view function, as far as joined table inheritance is concerned goes, is that the user is added to the "User" model only. What about the other model specific data, such as 'course' for a teacher or 'school' for a student? How do you add them to their models? Should you do this?
 
 ```python
   @app.route('/register', methods=['GET', 'POST'])
   def register():
+    # ...
     form = RegistrationForm()
     if form.validate_on_submit():
         user = User(username=form.username.data, email=form.email.data)
@@ -93,18 +91,18 @@ The problem with this view function as far as joined table inheritance is concer
     return render_template('register.html', title='Register')
 ```
 
-The problem with this is that the "User" model will have email and username data but lack course data, while the "Teacher" model will have course data but lack username and email data. This was not the desired outcome.
+This is even a bigger problem because the "User" model will have email and username data but lack course data, while the "Teacher" model will have course data but lack username and email data. This was not the desired outcome.
 
 I came to the conclusion that the concept of joined table inheritance is only theoretically possible. It is almost impractical to create an application whose database design is inspired by it.
 
 
 ### Attempt 3
 
-At last, I arrived to this attempt after someone suggested I try out a few of this packages: [flask principle](https://pythonhosted.org/Flask-Principal/#granular-resource-protection), [flask security](https://pythonhosted.org/Flask-Security/index.html) and [flask user](https://flask-user.readthedocs.io/en/latest/quickstart.html). It was also suggested that I could even implement my own custom logic to work with multiple users.
+At last, I arrived to this attempt after someone suggested I try out a few of these packages: [flask principle](https://pythonhosted.org/Flask-Principal/#granular-resource-protection), [flask security](https://pythonhosted.org/Flask-Security/index.html) and [flask user](https://flask-user.readthedocs.io/en/latest/quickstart.html). It was also suggested that I could even implement my own custom logic to work with multiple users.
 
-What all these ideas communicate is that Admin, Teacher and Student are all users. Why not use only one model called "User" then define roles for each user? I decided to follow the custom logic suggestion because I felt I could easily handle that. Basically, I will have only one model called user that defines all the columns I want. Some of these columns may not apply to each user, but that is fine. I can work with `None` or `Null` values here.
+What all these ideas communicate is that Admin, Teacher and Student are all users. Why not use only one model called "User" then define roles for each user? I decided to follow the custom logic suggestion because I felt I could easily handle that. Basically, I will have only one model called "User" that defines ALL the columns I want. Some of these columns may not apply to each user, but that is fine. I can work with `None` or `Null` values here. See [models.py module](app/models.py) for more information. 
 
-See [models.py module](app/models.py) for more information. I will then create view functions as you can see in the [routes module](app/routes.py) which help to populate respective database models. Of importance here is the additional role data I am adding in the view functions:
+I will then create view functions as you can see in the [routes module](app/routes.py) which help to populate respective database models. Of importance here is the additional role data I am adding in the view functions:
 
 ```python
 # app/routes.py
@@ -149,7 +147,7 @@ In select templates, I will limit the display of data based on the role of a sig
 {% endblock %}
 ```
 
-This page will be accessible by any logged in user but the content will not be available for view. Instead, a link to logout is presented to a non-admin user.
+This page will be accessible by any logged in user but the content will not be available for view by non-admin users. Instead, a link to logout is presented to a non-admin user.
 
 This solves my problem. And it is what I decided to use to complete my passion project [Somasoma Elearning App](https://github.com/GitauHarrison/somasoma-eLearning-app).
 
@@ -191,7 +189,7 @@ Each of these users can access all pages but only view content specific to them 
     cp .env-template .env
     ```
 
-5. Update your SECRET_KEY in `.env` file:
+5. Update your SECRET_KEY in `.env` file by pasting the output of this command:
 
     ```python
     (venv)$ python3 -c 'import secrets; print(secrets.token_hex(16))'
