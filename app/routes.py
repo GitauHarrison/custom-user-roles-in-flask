@@ -1,4 +1,3 @@
-from shutil import register_unpack_format
 from app import app, db
 from flask_login import login_required, current_user, login_user,\
     logout_user

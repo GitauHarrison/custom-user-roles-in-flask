@@ -3,17 +3,13 @@
 
 {% block app_content %}
 <div class="row">
-    <div class="col-md-12">
-        <h1>Register Teacher</h1>
-        <p>
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+        <h1 class="text-center">Register Teacher</h1>
+        <div class="myform">
             {{ wtf.quick_form(form) }}
-        </p>
-        <p>
-            Already registered? 
-            <a href="{{ url_for('login') }}">
-                Login
-            </a>
-        </p>
+        </div>
     </div>  
+    <div class="col-md-4"></div>
 </div>
 {% endblock %}
