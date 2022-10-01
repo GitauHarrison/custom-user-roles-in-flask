@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block app_content %}
+<div class="row">
+    <div class="col-md-12">
+        <h1>Teacher</h1>
+        <p>Username: {{ current_user.username }}</p>
+        <p>Role: {{ current_user.role }}</p>
+    </div>  
+</div>
+{% endblock %}
