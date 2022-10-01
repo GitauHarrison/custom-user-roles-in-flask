@@ -7,7 +7,12 @@
             <h1>Student</h1>
             <p>Username: {{ current_user.username }}</p>
             <p>Role: {{ current_user.role }}</p>
-        {% endif %}        
+        {% else %}
+            <p>
+                You are not allowed to access this page. 
+                <a href=" {{ url_for('logout') }} ">Log out immediately</a>.
+            </p>
+        {% endif %}   
     </div> 
 </div>
 {% endblock %}
